@@ -2,6 +2,7 @@ package sample;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,8 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
@@ -80,6 +79,17 @@ public class Main extends Application {
     public final String menuVboxIdle = "-fx-background-color: transparent;"+"-fx-cursor: default";
     public final String menuVboxHover = "-fx-background-color: rgb(0,0,0,0.50);"+"-fx-cursor: hand";
 
+    public void setSceneToGameOver(int i){
+        System.out.println("we are in main class and are trying to swap to gameOver scene");
+        System.out.println("players score was: "+i+" points");
+        GameOver gameover = new GameOver();
+        gameover.setScore(i);
+        System.out.println("score is set");
+        Scene gameoverScene = gameover.getScene();
+        //this never worked
+        //getMainStage().setScene(gameoverScene);
+    }
+
     public static String currentScene = "client";
 
     @Override
@@ -89,10 +99,14 @@ public class Main extends Application {
         clientStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (currentScene.equals("game")) {
                 switch (event.getCode()) {
-                    case W: dg.moveWSphere(); break;
-                    case S: dg.moveSSphere(); break;
-                    case D: dg.rotateDSphere(); break;
-                    case A: dg.rotateASphere(); break;
+                    case W: dg.moveCameraW(); break;
+                    case S: dg.moveCameraS(); break;
+                    case D: dg.movePlayerRight(); break;
+                    case A: dg.movePlayerLeft(); break;
+                    case X: dg.moveCameraUp(); break;
+                    case Z: dg.moveCameraDown(); break;
+                    case P: dg.flyForwardCamera(); break;
+                    case ESCAPE: System.out.println("escape was pressed and *gameover*"); dg.gameOver(); break;
                 }
             }
         });
@@ -127,8 +141,8 @@ public class Main extends Application {
         String enterHellButtonHover = "-fx-text-fill: white;"+"-fx-background-color: darkred;"+"-fx-border-width: 1;"+"-fx-border-color: white";
         enterHellButton.setOnAction(actionEvent -> {
             currentScene="game";
-            Scene gameScene = dg.getScene();
-            clientStage.setScene(gameScene);
+            Scene gamescene = dg.getMainGroup();
+            clientStage.setScene(gamescene);
         });
 
         enterHellButton.setStyle(enterHellButtonIdle);
